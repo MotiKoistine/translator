@@ -7,7 +7,7 @@ api_key = os.getenv('google_api_key')
 translate_url = os.getenv('translate_url')
 
 lang_from = 'fi'
-lang_to = 'en'
+lang_to = 'ru'
 
 sentence = ''
 
@@ -27,8 +27,6 @@ def get_translation(q):
 
     r_json = response.json()
 
-    print(r_json)
-
     return r_json['data']['translations']
 
 def replace_word():
@@ -45,12 +43,30 @@ def replace_word():
 
         keyboard.press(Key.space)
 
+last_backspace = time.time()
+
+bp_count = 0
+
 def on_press(key):
-    print(f'Pressed {key}')
+    global last_backspace
+    global sentence
+    global bp_count
+
+    if key == Key.backspace:
+        backspace_time = time.time()
+        backspace_between = backspace_time - last_backspace
+
+        if bp_count > 0:
+            if backspace_between > 0.06 and backspace_between < 0.2:
+                sentence = sentence[:-1]
+                print(sentence)
+        bp_count += 1
+        last_backspace = backspace_time
+
 
 def on_release(key):
     global sentence
-
+    global bp_count
     if key == Key.esc:
         return False
     elif key == Key.space:
@@ -59,6 +75,7 @@ def on_release(key):
     elif key == Key.backspace:
         if len(sentence) > 0:
             sentence = sentence[0:-1]
+        bp_count = 0
     elif key == Key.shift:
         pass
     else:
