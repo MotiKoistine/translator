@@ -91,7 +91,7 @@ def on_press(key):
             backspace_between = backspace_time - last_backspace
 
             if bp_count > 0:
-                if backspace_between > 0.06 and backspace_between < 0.2:
+                if backspace_between > 0.02 and backspace_between < 0.2:
                     sentence = sentence[:-1]
                     os.system(clear_cmd)
                     print(sentence)
@@ -129,8 +129,10 @@ def on_release(key):
             if len(sentence) > 0:
                 sentence = sentence[0:-1]
             bp_count = 0
-        elif key == Key.shift or key == Key.ctrl or key == Key.esc or key == Key.enter or str(key) == '<110>':
+        elif key == Key.shift or key == Key.ctrl or key == Key.esc or str(key) == '<110>':
             pass
+        elif key == Key.enter:
+            sentence = ''
         else:
             sentence = sentence + key.char
         os.system(clear_cmd)
