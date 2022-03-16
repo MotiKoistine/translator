@@ -145,9 +145,11 @@ def read_keyboard_inputs():
         listener.join()
 
 def main_menu(settings):
-    global lang_from, lang_to, shift_toggle
+    global lang_from, lang_to, shift_toggle, change_settings
     lang_from = settings['lang_from']
     lang_to = settings['lang_to']
+
+    change_settings = False
 
     os.system(clear_cmd)
 
