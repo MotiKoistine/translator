@@ -67,6 +67,7 @@ def replace_word():
 
     if len(sentence) > 0:
         for _ in range(len(sentence) + 1):
+            time.sleep(0.01)
             keyboard.press(Key.backspace)
     
         translated = get_translation(sentence)
@@ -90,7 +91,7 @@ def on_press(key):
             backspace_between = backspace_time - last_backspace
 
             if bp_count > 0:
-                if backspace_between > 0.06 and backspace_between < 0.2:
+                if backspace_between > 0.02 and backspace_between < 0.2:
                     sentence = sentence[:-1]
                     os.system(clear_cmd)
                     print(sentence)
@@ -103,7 +104,6 @@ def on_press(key):
 def on_release(key):
     global sentence, bp_count, shift_toggle, ctrl_toggle, change_settings, translating
 
-
     if key == Key.ctrl:
         ctrl_toggle = False
 
@@ -112,6 +112,12 @@ def on_release(key):
             translating = False
         else:
             translating = True
+
+    if str(key) == '<110>':
+      if translating:
+        translating = False
+      else:
+        translating = True
 
     if translating:
         if key == Key.esc and not shift_toggle and not ctrl_toggle:
@@ -123,8 +129,10 @@ def on_release(key):
             if len(sentence) > 0:
                 sentence = sentence[0:-1]
             bp_count = 0
-        elif key == Key.shift or key == Key.ctrl or key == Key.esc or key == Key.enter:
+        elif key == Key.shift or key == Key.ctrl or key == Key.esc or str(key) == '<110>':
             pass
+        elif key == Key.enter:
+            sentence = ''
         else:
             sentence = sentence + key.char
         os.system(clear_cmd)
@@ -155,7 +163,7 @@ def main_menu(settings):
 
     print('Welcome to Miro The Translator')
     print(f'Current settings: from {settings["lang_from"].upper()} to {settings["lang_to"].upper()}. To change settings press Shift + ESC. *translating must be toggled off*')
-    print('Toggle translation by pressing CTRL + ESC')
+    print('Toggle translation by pressing CTRL + ESC or CTRL + 1 on Windows')
     print('Close by pressing ESC')
 
     read_keyboard_inputs()
@@ -167,7 +175,6 @@ def main_menu(settings):
 
 def setup():
     os.system(clear_cmd)
-
     dir_files = os.listdir(script_dir)
 
     if 'settings.json' not in dir_files:
